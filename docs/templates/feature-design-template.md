@@ -1,4 +1,4 @@
-# 📋 Feature Specification Template
+# 📋 Feature Design Template
 
 > **Version**: 1.0.0 | **Created**: 2025-10-28 | **Agent**: Athena
 
