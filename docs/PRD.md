@@ -3,9 +3,11 @@
 ## 1. 프로젝트 개요 (Project Overview)
 
 ### 1.1. 목표
+
 이 프로젝트는 사용자가 개인 및 업무 일정을 효과적으로 관리할 수 있도록 돕는 웹 기반 캘린더 애플리케이션입니다. 사용자는 이벤트를 생성, 수정, 삭제하고 월별 또는 주별로 일정을 시각적으로 확인할 수 있습니다.
 
 ### 1.2. 주요 기능 요약
+
 - **일정 관리:** 제목, 날짜, 시간, 설명 등을 포함한 일정 생성, 수정, 삭제 기능
 - **캘린더 뷰:** 월별(Month View) 및 주별(Week View) 일정 보기 모드 제공
 - **일정 검색:** 키워드를 통해 특정 일정을 빠르게 검색
@@ -135,6 +137,7 @@
 ## 7. 주요 코드 예시 (Key Code Snippets)
 
 ### 7.1. 커스텀 훅 (`/src/hooks/useSearch.ts` 예시)
+
 ```typescript
 import { useState, useMemo } from 'react';
 import { Event } from '../types';
@@ -149,9 +152,7 @@ export function useSearch(events: Event[]) {
       return events;
     }
     // 실제 로직은 다를 수 있으나, 검색어로 이벤트를 필터링하는 패턴을 보여줍니다.
-    return events.filter(event => 
-      event.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    return events.filter((event) => event.title.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [searchTerm, events]);
 
   return { searchTerm, setSearchTerm, filteredEvents };
@@ -159,6 +160,7 @@ export function useSearch(events: Event[]) {
 ```
 
 ### 7.2. 단위 테스트 (`/src/__tests__/unit/easy.dateUtils.spec.ts` 예시)
+
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { formatMonth } from '../../utils/dateUtils';
@@ -171,10 +173,10 @@ describe('dateUtils', () => {
     it('should format a Date object to "YYYY년 M월" string', () => {
       // Given: 테스트할 입력값
       const date = new Date('2025-10-29');
-      
+
       // When: 함수 실행
       const result = formatMonth(date);
-      
+
       // Then: 기대하는 결과
       expect(result).toBe('2025년 10월');
     });
@@ -183,6 +185,7 @@ describe('dateUtils', () => {
 ```
 
 ### 7.3. 컴포넌트 스타일링 (`/src/App.tsx` 일부 예시)
+
 ```typescript
 import { FormControl, FormLabel, TextField, Box } from '@mui/material';
 
@@ -192,14 +195,14 @@ function EventForm() {
   // ... component logic
   return (
     <Box sx={{ width: '100%', p: { xs: 2, md: 4 } }}>
-        <FormControl fullWidth margin="normal">
-            <FormLabel htmlFor="title">제목</FormLabel>
-            <TextField
-              id="title"
-              size="small"
-              // ... other props
-            />
-        </FormControl>
+      <FormControl fullWidth margin="normal">
+        <FormLabel htmlFor="title">제목</FormLabel>
+        <TextField
+          id="title"
+          size="small"
+          // ... other props
+        />
+      </FormControl>
     </Box>
   );
 }
