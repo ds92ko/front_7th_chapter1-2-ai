@@ -14,13 +14,13 @@
 
 ## 2. 🚀 에이전트별 완료 상태
 
-| 에이전트명 | 상태           | 완료 시간 (YYYY-MM-DD HH:MM:SS) |
-| :--------- | :------------- | :------------------------------ |
-| **Athena** | [✅ done, 🔄 in_progress, ❌ failed] | [YYYY-MM-DD HH:MM:SS]           |
-| **Artemis** | [✅ done, 🔄 in_progress, ❌ failed] | [YYYY-MM-DD HH:MM:SS]           |
+| 에이전트명   | 상태                                 | 완료 시간 (YYYY-MM-DD HH:MM:SS) |
+| :----------- | :----------------------------------- | :------------------------------ |
+| **Athena**   | [✅ done, 🔄 in_progress, ❌ failed] | [YYYY-MM-DD HH:MM:SS]           |
+| **Artemis**  | [✅ done, 🔄 in_progress, ❌ failed] | [YYYY-MM-DD HH:MM:SS]           |
 | **Poseidon** | [✅ done, 🔄 in_progress, ❌ failed] | [YYYY-MM-DD HH:MM:SS]           |
-| **Hermes** | [✅ done, 🔄 in_progress, ❌ failed] | [YYYY-MM-DD HH:MM:SS]           |
-| **Apollo** | [✅ done, 🔄 in_progress, ❌ failed] | [YYYY-MM-DD HH:MM:SS]           |
+| **Hermes**   | [✅ done, 🔄 in_progress, ❌ failed] | [YYYY-MM-DD HH:MM:SS]           |
+| **Apollo**   | [✅ done, 🔄 in_progress, ❌ failed] | [YYYY-MM-DD HH:MM:SS]           |
 
 ---
 
