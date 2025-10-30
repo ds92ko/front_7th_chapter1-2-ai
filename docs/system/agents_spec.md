@@ -62,7 +62,7 @@ User 입력 → Zeus → Athena → Artemis → Poseidon → Hermes → Apollo �
 | ② 테스트 설계      | Artemis   | feature_spec.md                | test_spec.md       | Zeus가 test_spec.md 생성 확인 후 Poseidon 호출, 빈 describe/it 코드블록 생성 포함           |
 | ③ 테스트 코드 작성 | Poseidon  | test_spec.md                   | test_code.md       | Zeus가 test_code.md 생성 확인 후 Hermes 호출, Artemis 코드블록 내부에 실제 테스트 코드 작성 |
 | ④ 코드 작성        | Hermes    | test_code.md / feature_spec.md | impl_code.md       | Zeus가 impl_code.md 생성 확인 후 Apollo 호출 , 실제 기능 코드 작성 포함                     |
-| ⑤ 리팩토링         | Apollo    | impl_code.md / test_code.md    | refactor_report.md | Zeus가 완료 후 전체 상태 완료 표시 , Hermes 코드 실제 리팩토링 수행 포함                    |
+| ⑤ 리팩토링         | Apollo    | impl_code.md                   | refactor_report.md | Zeus가 완료 후 전체 상태 완료 표시 , Hermes 코드 실제 리팩토링 수행 포함                    |
 
 ---
 
@@ -122,7 +122,7 @@ User 입력 → Zeus → Athena → Artemis → Poseidon → Hermes → Apollo �
 
 ### 🟪 5단계 — Apollo (리팩토링)
 
-- **입력:** `impl_code.md`, `test_code.md`
+- **입력:** `impl_code.md`
 - **출력:** `refactor_report.md`, 수정된 `impl_code.md`
 - **역할:**
   - 코드 품질 개선 (가독성, 재사용성, 구조 정리)
