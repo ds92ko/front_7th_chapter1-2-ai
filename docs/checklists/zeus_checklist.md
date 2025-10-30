@@ -33,12 +33,14 @@
 
 - **단계별 에이전트 호출**: `agents_spec.md`에 정의된 순서에 따라 각 에이전트를 올바르게 호출했는가?
 - **전환 조건 확인**: 각 에이전트의 작업 완료 후, `agents_spec.md`에 명시된 전환 조건(예: 특정 파일 생성 확인)을 정확히 감지했는가?
-- **`context.md` 상태 업데이트**: 각 단계 완료 후 `context.md`의 `current_stage`, `overall_status`, 에이전트별 완료 여부 등을 정확하게 업데이트했는가?
+- **`context.md` 상태 업데이트**:
+  - 각 단계 완료 후 `context.md`의 `current_stage`, `overall_status`, 에이전트별 완료 여부 등을 정확하게 업데이트했는가?
+  - **⚠️ `완료 시간`은 반드시 해당 단계가 완료된 `정확한 현재 시스템 시간`으로 기록했는가?**
 - **테스트 실행 및 결과 확인**:
   - Poseidon 단계 완료 후 `pnpm run test`를 실행하여 테스트 실패를 확인했는가?
   - Hermes 및 Apollo 단계 완료 후 `pnpm run test`를 실행하여 테스트 성공을 확인했는가?
 - **단계별 Git 커밋 강제**:
-  - 각 에이전트의 작업 완료 후 `main` 브랜치에 `git commit`을 수행했는가?
+  - **⚠️ 각 에이전트의 작업 완료 후 `main` 브랜치에 `git commit`을 수행했는가? (이 단계는 절대 건너뛰어서는 안 된다!)**
   - 커밋 메시지 형식(`[type]([AgentName]): [Stage Description]`)을 준수했는가?
   - 커밋 메시지 예시:
     - `docs(Athena): 기능 명세 작성 완료`
