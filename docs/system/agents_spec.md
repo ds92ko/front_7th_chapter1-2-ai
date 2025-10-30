@@ -229,18 +229,9 @@ refactor_report.md ← Apollo
 │   ├── hermes_guide.md
 │   └── apollo_guide.md
 │
-├── references/                 # 각 에이전트 작업 전 참고 문서
-│   ├── zeus_reference.md
-│   ├── athena_reference.md
-│   ├── artemis_reference.md
-│   ├── poseidon_reference.md
-│   ├── hermes_reference.md
-│   └── apollo_reference.md
-│
 ├── templates/                  # 템플릿 문서
 │   ├── agent_card_template.md
 │   ├── checklist_template.md
-│   ├── reference_template.md
 │   ├── guide_template.md
 │   ├── context_template.md
 │   ├── feature_spec_template.md
