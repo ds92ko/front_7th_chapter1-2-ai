@@ -1,14 +1,14 @@
 # 🧠 Multi-Agent TDD System Specification
 
-> **목적**:  
-> 이 문서는 **Zeus(오케스트레이터)**가 관리하는 멀티 에이전트 TDD 개발 파이프라인의 전체 구조, 역할, 데이터 흐름 및 산출물을 명세한다.  
+> **목적**:
+> 이 문서는 **Zeus(오케스트레이터)**가 관리하는 멀티 에이전트 TDD 개발 파이프라인의 전체 구조, 역할, 데이터 흐름 및 산출물을 명세한다.
 > 모든 에이전트는 이 정의를 기반으로 협업하며, 입력·출력 포맷을 일관되게 유지해야 한다.
 
 ---
 
 ## 🏛️ 1. 시스템 개요
 
-이 시스템은 총 6개의 에이전트로 구성되어 있으며, **TDD 사이클을 자동화**하기 위해 설계되었다.  
+이 시스템은 총 6개의 에이전트로 구성되어 있으며, **TDD 사이클을 자동화**하기 위해 설계되었다.
 각 에이전트는 특정 역할에 특화된 페르소나(Persona)를 가지고, Zeus의 지시에 따라 순차적으로 실행된다.
 
 ### 🧩 1.1 주요 특징
@@ -40,7 +40,7 @@
 | 1   | **Zeus**     | 제우스 (오케스트레이터)           | 전체 워크플로우 제어, 상태 감시, 단계 전환, 로그 관리, 각 단계 완료 후 `pnpm run test` 실행: Artemis / Poseidon 단계 실패, Hermes / Apollo 단계 성공 | 사용자 요구사항 / context.md   | context.md (상태 업데이트)               |
 | 2   | **Athena**   | 아테네 (지혜와 전략의 여신)       | 기능 명세 작성 (PRD 수준의 상세 명세)                                                                                                                | 사용자 요구사항 / context.md   | feature_spec.md                          |
 | 3   | **Artemis**  | 아르테미스 (정확성과 통찰의 여신) | 테스트 설계 (시나리오 및 테스트 케이스 명세), 빈 describe/it 코드블록 생성 포함                                                                      | feature_spec.md                | test_spec.md                             |
-| 4   | **Poseidon** | 포세이돈 (테스트의 수호자)        | 테스트 코드 작성 (`Vitest + RTL` 기반 코드 생성), Artemis 코드블록 내부에 실제 테스트 코드 작성                                                      | test_spec.md                   | test_code.md                             |
+| 4   | **Poseidon** | 포세이돈 (테스트의 수호자)        | 테스트 코드 작성 (`Vitest + RTL` 기반 코드 생성), Artemis 코드블록 내부에 실제 테스트 코드 작성, **테스트 대상 코드 스켈레톤 파일 생성**             | test_spec.md                   | test_code.md                             |
 | 5   | **Hermes**   | 헤르메스 (전달자, 구현의 신)      | 테스트를 통과시키는 실제 구현 코드 작성, 실제 기능 소스코드 작성                                                                                     | test_code.md / feature_spec.md | impl_code.md                             |
 | 6   | **Apollo**   | 아폴로 (예술과 완성의 신)         | 리팩토링 및 코드 개선, 테스트 유지 , Hermes 코드 실제 리팩토링 수행                                                                                  | impl_code.md / test_code.md    | refactor_report.md / 개선된 impl_code.md |
 
@@ -97,20 +97,21 @@ User 입력 → Zeus → Athena → Artemis → Poseidon → Hermes → Apollo �
 ### 🟩 3단계 — Poseidon (테스트 코드 작성)
 
 - **입력:** `test_spec.md`
-- **출력:** `test_code.md` (실제 테스트 코드)
+- **출력:** `test_code.md`, 실제 테스트 코드, **테스트 대상 코드 스켈레톤 파일**
 - **역할:**
   - 명세된 테스트 케이스를 코드로 구현 (Vitest/RTL 등)
   - 공통 테스트 유틸, setupTest.ts, mock 데이터 고려
   - 테스트 실행 시 실패해야 함 (TDD 초기 상태 유지)
   - `test_code.md` 파일 생성과 동시에, Artemis가 만든 빈 `describe`/`it` 코드블록 내부에 실제 테스트 코드 작성
-- **Zeus의 전환 조건:** `test_code.md` 존재 및 코드 블록 포함 확인
+  - **테스트 코드가 참조하는 함수나 컴포넌트의 스켈레톤 파일 생성**
+- **Zeus의 전환 조건:** `test_code.md`, **실제 테스트 파일 및 스켈레톤 파일** 존재 및 코드 블록 포함 확인, **`pnpm run test` 실행 시 해당 테스트가 실패함**
 
 ---
 
 ### 🟧 4단계 — Hermes (코드 작성)
 
 - **입력:** `test_code.md`, `feature_spec.md`
-- **출력:** `impl_code.md`
+- **출력:** `impl_code.md`, 실제 코드
 - **역할:**
   - 테스트를 통과하도록 최소한의 구현
   - 기존 구조 및 ESLint/Prettier 규칙 준수
