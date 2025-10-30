@@ -103,7 +103,7 @@ Zeus(오케스트레이터)와의 상호작용 방식에 대한 구체적인 설
 - **`poseidon_checklist.md`**: Poseidon 에이전트 작업 체크리스트
 - **`poseidon_guide.md`**: Poseidon 에이전트 작업 가이드라인
 - **`test_spec.md`**: Poseidon의 입력 파일 (Artemis가 생성)
-- **`test_code.md`**: Poseidon의 출력 파일
+- **`test_code_template.md`**: Poseidon이 생성할 `test_code.md`의 구조 및 내용 가이드
 
 ---
 
