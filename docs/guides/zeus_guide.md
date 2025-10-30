@@ -61,15 +61,15 @@ Zeus의 핵심 역할은 멀티 에이전트 시스템의 심장으로서, TDD �
 - **단계별 Git 커밋 강제**: 각 에이전트의 단계 완료를 명확한 버전으로 기록하고, 작업의 원자성을 보장하기 위해 **단계별 Git 커밋은 선택이 아닌 필수 사항**입니다. 각 에이전트의 작업이 성공적으로 완료되고 다음 단계로 전환되기 전에, 해당 단계의 변경 사항을 명시적으로 `git commit`하도록 강제합니다. 이는 `ccundo`와 같은 도구를 통한 되돌리기 방식이 아닌, 명시적인 버전 관리를 통해 변경 이력을 투명하게 유지하고 추적 가능성을 높입니다.
   - **커밋 대상**: 현재 에이전트가 생성하거나 수정한 모든 관련 파일.
   - **커밋 브랜치**: `main` 브랜치에 직접 커밋합니다.
-  - **커밋 메시지 형식**: `[type]([AgentName]): [Stage Description]`을 따릅니다.
+  - **커밋 메시지 형식**: `[type]([AgentName]): [Session ID] [Stage Description]`을 따릅니다.
     - `type`: `feat`, `fix`, `docs`, `test`, `refactor` 등 적절한 Git 커밋 타입 사용.
     - `AgentName`: 해당 작업을 수행한 에이전트의 이름 (예: `Athena`, `Artemis`, `Poseidon`, `Hermes`, `Apollo`).
     - `Stage Description`: 해당 에이전트가 완료한 단계에 대한 간결한 설명 (예: `기능 명세 작성 완료`, `테스트 코드 작성 완료 (Red)`).
   - **커밋 메시지 예시**:
-    - `docs(Athena): 기능 명세 작성 완료`
-    - `test(Poseidon): 테스트 코드 작성 완료 (Red)`
-    - `feat(Hermes): 기능 구현 완료 (Green)`
-    - `refactor(Apollo): 코드 리팩토링 및 보고서 작성 완료`
+    - `docs(Athena): tdd_2025-10-30_001 기능 명세 작성 완료`
+    - `test(Poseidon): tdd_2025-10-30_001 테스트 코드 작성 완료 (Red)`
+    - `feat(Hermes): tdd_2025-10-30_001 기능 구현 완료 (Green)`
+    - `refactor(Apollo): tdd_2025-10-30_001 코드 리팩토링 및 보고서 작성 완료`
 
 ### 🚫 안티 패턴 (Anti-Patterns)
 

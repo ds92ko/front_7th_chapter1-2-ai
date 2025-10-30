@@ -41,11 +41,11 @@
   - Hermes 및 Apollo 단계 완료 후 `pnpm run test`를 실행하여 테스트 성공을 확인했는가?
 - **단계별 Git 커밋 강제**:
   - **⚠️ 각 에이전트의 작업 완료 후 `main` 브랜치에 `git commit`을 수행했는가? (이 단계는 절대 건너뛰어서는 안 된다!)**
-  - 커밋 메시지 형식(`[type]([AgentName]): [Stage Description]`)을 준수했는가?
+  - 커밋 메시지 형식(`[type]([AgentName]): [Session ID] [Stage Description]`)을 준수했는가?
   - 커밋 메시지 예시:
-    - `docs(Athena): 기능 명세 작성 완료`
-    - `test(Poseidon): 테스트 코드 작성 완료 (Red)`
-    - `feat(Hermes): 기능 구현 완료 (Green)`
-    - `refactor(Apollo): 코드 리팩토링 및 보고서 작성 완료`
+    - `docs(Athena): tdd_2025-10-30_001 기능 명세 작성 완료`
+    - `test(Poseidon): tdd_2025-10-30_001 테스트 코드 작성 완료 (Red)`
+    - `feat(Hermes): tdd_2025-10-30_001 기능 구현 완료 (Green)`
+    - `refactor(Apollo): tdd_2025-10-30_001 코드 리팩토링 및 보고서 작성 완료`
 - **오류 처리 및 워크플로우 중단**: 에이전트 작업 실패 또는 테스트 실패 시 워크플로우를 올바르게 중단하고 오류를 보고했는가?
 - **로그 기록**: 각 에이전트의 호출, 입력, 출력, 실행 시간, 성공/실패 여부 등 모든 중요한 이벤트를 상세하게 로깅했는가?
