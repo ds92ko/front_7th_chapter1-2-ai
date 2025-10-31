@@ -228,25 +228,18 @@ describe('반복 일정 수정', () => {
         },
       ];
 
-      let apiCalled = false;
-      let requestBody: Partial<Event> | null = null;
-      let calledRepeatId: string | undefined;
+      let apiCallCount = 0;
+      const updatedEventIds: string[] = [];
 
       server.use(
         http.get('/api/events', () => {
           return HttpResponse.json({ events: mockRecurringEvents });
         }),
-        http.put('/api/recurring-events/:repeatId', async ({ request, params }) => {
-          apiCalled = true;
-          calledRepeatId = params.repeatId as string;
-          requestBody = (await request.json()) as Partial<Event>;
-
-          // 모든 반복 일정 업데이트
-          const updatedEvents = mockRecurringEvents.map((event) =>
-            event.repeat.id === params.repeatId ? { ...event, ...requestBody } : event
-          );
-
-          return HttpResponse.json(updatedEvents.filter((e) => e.repeat.id === params.repeatId));
+        http.put('/api/events/:id', async ({ request, params }) => {
+          apiCallCount++;
+          updatedEventIds.push(params.id as string);
+          const updatedEvent = (await request.json()) as Event;
+          return HttpResponse.json(updatedEvent);
         })
       );
 
@@ -281,20 +274,15 @@ describe('반복 일정 수정', () => {
       const noButton = within(dialog).getByRole('button', { name: '아니오' });
       await user.click(noButton);
 
-      // API 호출 확인
+      // API 호출 확인 (시간 변경이 있어서 개별 API 호출됨)
       await waitFor(() => {
-        expect(apiCalled).toBe(true);
+        expect(apiCallCount).toBe(3); // 3개 일정 모두 개별 업데이트
       });
 
-      // repeatId 확인
-      expect(calledRepeatId).toBe('repeat-456');
-
-      // Request body 확인
-      expect(requestBody).not.toBeNull();
-      expect(requestBody!.title).toBe('팀 미팅');
-      expect(requestBody!.startTime).toBe('14:00');
-      expect(requestBody!.endTime).toBe('15:00');
-      expect(requestBody!.location).toBe('회의실 B');
+      // 모든 일정이 업데이트되었는지 확인
+      expect(updatedEventIds).toContain('recurring-1');
+      expect(updatedEventIds).toContain('recurring-2');
+      expect(updatedEventIds).toContain('recurring-3');
     });
   });
 

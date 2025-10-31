@@ -29,19 +29,86 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
         // 반복 일정 전체 수정
         if (editAllRecurring && (eventData as Event).repeat?.id) {
           const repeatId = (eventData as Event).repeat.id;
-          response = await fetch(`/api/recurring-events/${repeatId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              title: eventData.title,
-              description: eventData.description,
-              location: eventData.location,
-              category: eventData.category,
-              notificationTime: eventData.notificationTime,
-              startTime: eventData.startTime,
-              endTime: eventData.endTime,
-            }),
-          });
+          const editingEventData = eventData as Event;
+
+          // 같은 시리즈의 모든 일정 가져오기
+          const seriesEvents = events.filter((e) => e.repeat.id === repeatId);
+          const firstEvent = seriesEvents[0];
+
+          // 날짜/시간 변경 여부 확인
+          const dateChanged = editingEventData.date !== firstEvent.date;
+          const timeChanged =
+            editingEventData.startTime !== firstEvent.startTime ||
+            editingEventData.endTime !== firstEvent.endTime;
+
+          // 날짜나 시간이 변경된 경우
+          if (dateChanged || timeChanged) {
+            // 날짜 차이 계산
+            let dateDiff = 0;
+            if (dateChanged) {
+              const oldDate = new Date(firstEvent.date);
+              const newDate = new Date(editingEventData.date);
+              dateDiff = Math.floor(
+                (newDate.getTime() - oldDate.getTime()) / (1000 * 60 * 60 * 24)
+              );
+            }
+
+            // 종료일 확인
+            const endDate = firstEvent.repeat.endDate;
+
+            // 각 일정을 개별적으로 업데이트 또는 삭제
+            const updatePromises = seriesEvents.map(async (event) => {
+              let updatedDate = event.date;
+
+              // 날짜 이동
+              if (dateDiff !== 0) {
+                const eventDate = new Date(event.date);
+                eventDate.setDate(eventDate.getDate() + dateDiff);
+                const year = eventDate.getFullYear();
+                const month = String(eventDate.getMonth() + 1).padStart(2, '0');
+                const day = String(eventDate.getDate()).padStart(2, '0');
+                updatedDate = `${year}-${month}-${day}`;
+              }
+
+              // 종료일을 넘는 일정은 삭제
+              if (endDate && updatedDate > endDate) {
+                return fetch(`/api/events/${event.id}`, { method: 'DELETE' });
+              }
+
+              // 일정 업데이트
+              return fetch(`/api/events/${event.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  ...event,
+                  date: updatedDate,
+                  title: editingEventData.title,
+                  description: editingEventData.description,
+                  location: editingEventData.location,
+                  category: editingEventData.category,
+                  notificationTime: editingEventData.notificationTime,
+                  startTime: editingEventData.startTime,
+                  endTime: editingEventData.endTime,
+                }),
+              });
+            });
+
+            await Promise.all(updatePromises);
+            response = { ok: true } as Response;
+          } else {
+            // 날짜/시간 변경이 없으면 기존 API 사용
+            response = await fetch(`/api/recurring-events/${repeatId}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                title: editingEventData.title,
+                description: editingEventData.description,
+                location: editingEventData.location,
+                category: editingEventData.category,
+                notificationTime: editingEventData.notificationTime,
+              }),
+            });
+          }
         } else {
           // 단일 일정 수정
           response = await fetch(`/api/events/${(eventData as Event).id}`, {
