@@ -68,8 +68,11 @@ export const useEventOperations = (
             // 종료일 확인
             const endDate = originalEvent.repeat.endDate;
 
-            // 각 일정을 개별적으로 업데이트 또는 삭제
-            const updatePromises = seriesEvents.map(async (event) => {
+            // 업데이트할 일정과 삭제할 일정 분리
+            const eventsToUpdate: Event[] = [];
+            const eventIdsToDelete: string[] = [];
+
+            seriesEvents.forEach((event) => {
               let updatedDate = event.date;
 
               // 날짜 이동
@@ -84,18 +87,14 @@ export const useEventOperations = (
 
               console.log(`일정 ${event.id.substring(0, 8)}:`, event.date, '→', updatedDate);
 
-              // 종료일을 넘는 일정은 삭제
+              // 종료일을 넘는 일정은 삭제 목록에 추가
               if (endDate && updatedDate > endDate) {
                 console.log(`❌ 삭제: ${updatedDate} > ${endDate}`);
-                return fetch(`/api/events/${event.id}`, { method: 'DELETE' });
-              }
-
-              // 일정 업데이트
-              console.log(`✅ 업데이트: ${event.date} → ${updatedDate}`);
-              return fetch(`/api/events/${event.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+                eventIdsToDelete.push(event.id);
+              } else {
+                // 업데이트 목록에 추가
+                console.log(`✅ 업데이트: ${event.date} → ${updatedDate}`);
+                eventsToUpdate.push({
                   ...event,
                   date: updatedDate,
                   title: editingEventData.title,
@@ -105,11 +104,36 @@ export const useEventOperations = (
                   notificationTime: editingEventData.notificationTime,
                   startTime: editingEventData.startTime,
                   endTime: editingEventData.endTime,
-                }),
-              });
+                });
+              }
             });
 
-            await Promise.all(updatePromises);
+            // 일괄 업데이트 및 삭제
+            const promises = [];
+
+            if (eventsToUpdate.length > 0) {
+              console.log(`📦 일괄 업데이트: ${eventsToUpdate.length}개`);
+              promises.push(
+                fetch('/api/events-list', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ events: eventsToUpdate }),
+                })
+              );
+            }
+
+            if (eventIdsToDelete.length > 0) {
+              console.log(`🗑️ 일괄 삭제: ${eventIdsToDelete.length}개`);
+              promises.push(
+                fetch('/api/events-list', {
+                  method: 'DELETE',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ eventIds: eventIdsToDelete }),
+                })
+              );
+            }
+
+            await Promise.all(promises);
             console.log('✅ 모든 업데이트 완료');
             response = { ok: true } as Response;
           } else {

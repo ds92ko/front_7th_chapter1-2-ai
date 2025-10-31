@@ -228,18 +228,18 @@ describe('반복 일정 수정', () => {
         },
       ];
 
-      let apiCallCount = 0;
-      const updatedEventIds: string[] = [];
+      let apiCalled = false;
+      const updatedEvents: Event[] = [];
 
       server.use(
         http.get('/api/events', () => {
           return HttpResponse.json({ events: mockRecurringEvents });
         }),
-        http.put('/api/events/:id', async ({ request, params }) => {
-          apiCallCount++;
-          updatedEventIds.push(params.id as string);
-          const updatedEvent = (await request.json()) as Event;
-          return HttpResponse.json(updatedEvent);
+        http.put('/api/events-list', async ({ request }) => {
+          apiCalled = true;
+          const body = (await request.json()) as { events: Event[] };
+          updatedEvents.push(...body.events);
+          return HttpResponse.json(mockRecurringEvents);
         })
       );
 
@@ -274,15 +274,15 @@ describe('반복 일정 수정', () => {
       const noButton = within(dialog).getByRole('button', { name: '아니오' });
       await user.click(noButton);
 
-      // API 호출 확인 (시간 변경이 있어서 개별 API 호출됨)
+      // API 호출 확인 (시간 변경이 있어서 일괄 업데이트)
       await waitFor(() => {
-        expect(apiCallCount).toBe(3); // 3개 일정 모두 개별 업데이트
+        expect(apiCalled).toBe(true);
       });
 
       // 모든 일정이 업데이트되었는지 확인
-      expect(updatedEventIds).toContain('recurring-1');
-      expect(updatedEventIds).toContain('recurring-2');
-      expect(updatedEventIds).toContain('recurring-3');
+      expect(updatedEvents).toHaveLength(3);
+      expect(updatedEvents[0].startTime).toBe('14:00');
+      expect(updatedEvents[0].endTime).toBe('15:00');
     });
   });
 

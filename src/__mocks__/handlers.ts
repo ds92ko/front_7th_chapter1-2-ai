@@ -42,6 +42,25 @@ export const handlers = [
     return new HttpResponse(null, { status: 404 });
   }),
 
+  http.put('/api/events-list', async ({ request }) => {
+    const body = (await request.json()) as { events: Event[] };
+    let isUpdated = false;
+
+    body.events.forEach((event) => {
+      const index = mockEvents.findIndex((e) => e.id === event.id);
+      if (index !== -1) {
+        isUpdated = true;
+        mockEvents[index] = { ...mockEvents[index], ...event };
+      }
+    });
+
+    if (isUpdated) {
+      return HttpResponse.json(mockEvents);
+    }
+
+    return new HttpResponse('Event not found', { status: 404 });
+  }),
+
   http.delete('/api/events/:id', ({ params }) => {
     const { id } = params;
     const index = mockEvents.findIndex((event) => event.id === id);
@@ -52,6 +71,12 @@ export const handlers = [
     }
 
     return new HttpResponse(null, { status: 404 });
+  }),
+
+  http.delete('/api/events-list', async ({ request }) => {
+    const body = (await request.json()) as { eventIds: string[] };
+    mockEvents = mockEvents.filter((event) => !body.eventIds.includes(event.id));
+    return new HttpResponse(null, { status: 204 });
   }),
 
   http.put('/api/recurring-events/:repeatId', async ({ params, request }) => {
