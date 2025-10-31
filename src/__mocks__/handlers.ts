@@ -26,7 +26,7 @@ export const handlers = [
       repeat: { ...event.repeat, id: event.repeat.type !== 'none' ? 'repeat-id-123' : undefined },
     }));
     mockEvents.push(...eventsWithIds);
-    return HttpResponse.json({ events: eventsWithIds }, { status: 201 });
+    return HttpResponse.json(eventsWithIds, { status: 201 }); // 배열 직접 반환
   }),
 
   http.put('/api/events/:id', async ({ params, request }) => {

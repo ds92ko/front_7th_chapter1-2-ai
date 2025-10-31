@@ -215,16 +215,21 @@ describe('useEventOperations - 반복 일정', () => {
 
   it('반복 일정 저장 성공 시 이벤트 목록을 갱신한다', async () => {
     // Given
+    const savedEvents: Event[] = [];
+
     server.use(
+      http.get('/api/events', () => {
+        return HttpResponse.json({ events: savedEvents });
+      }),
       http.post('/api/events-list', async ({ request }) => {
         const body = await request.json();
-        return HttpResponse.json({
-          events: (body as { events: Event[] }).events.map((event, index) => ({
-            ...event,
-            id: `recurring-${index}`,
-            repeat: { ...event.repeat, id: 'repeat-id-123' },
-          })),
-        });
+        const newEvents = (body as { events: Event[] }).events.map((event, index) => ({
+          ...event,
+          id: `recurring-${index}`,
+          repeat: { ...event.repeat, id: 'repeat-id-123' },
+        }));
+        savedEvents.push(...newEvents);
+        return HttpResponse.json(newEvents);
       })
     );
 
