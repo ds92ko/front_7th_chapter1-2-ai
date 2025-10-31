@@ -141,6 +141,7 @@ DELETE /api/events/:id
 ```
 
 **서버 동작** (`server.js` 확인 완료):
+
 - 해당 `id`를 가진 일정을 삭제
 - 204 No Content 반환
 
@@ -151,6 +152,7 @@ DELETE /api/recurring-events/:repeatId
 ```
 
 **서버 동작** (`server.js` 확인 완료):
+
 - 같은 `repeat.id`를 가진 모든 일정을 삭제
 - 204 No Content 반환
 
@@ -328,4 +330,3 @@ const handleDeleteAllEvents = async () => {
 - [x] 성공 기준을 측정 가능하게 작성했는가?
 - [x] 위험 요소와 대응 방안을 고려했는가?
 - [x] 문서의 가독성과 완전성을 확인했는가?
-
