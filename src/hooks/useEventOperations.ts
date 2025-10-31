@@ -59,6 +59,12 @@ export const useEventOperations = (
               );
             }
 
+            console.log('🔥 반복 일정 전체 수정 시작');
+            console.log('원본 일정:', originalEvent.date);
+            console.log('변경 날짜:', editingEventData.date);
+            console.log('날짜 차이:', dateDiff, '일');
+            console.log('시리즈 일정 개수:', seriesEvents.length);
+
             // 종료일 확인
             const endDate = originalEvent.repeat.endDate;
 
@@ -76,12 +82,16 @@ export const useEventOperations = (
                 updatedDate = `${year}-${month}-${day}`;
               }
 
+              console.log(`일정 ${event.id.substring(0, 8)}:`, event.date, '→', updatedDate);
+
               // 종료일을 넘는 일정은 삭제
               if (endDate && updatedDate > endDate) {
+                console.log(`❌ 삭제: ${updatedDate} > ${endDate}`);
                 return fetch(`/api/events/${event.id}`, { method: 'DELETE' });
               }
 
               // 일정 업데이트
+              console.log(`✅ 업데이트: ${event.date} → ${updatedDate}`);
               return fetch(`/api/events/${event.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -100,6 +110,7 @@ export const useEventOperations = (
             });
 
             await Promise.all(updatePromises);
+            console.log('✅ 모든 업데이트 완료');
             response = { ok: true } as Response;
           } else {
             // 날짜/시간 변경이 없으면 기존 API 사용
