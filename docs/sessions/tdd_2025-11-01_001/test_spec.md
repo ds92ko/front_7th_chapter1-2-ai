@@ -27,6 +27,7 @@
 **테스트 케이스**: "주별 뷰에서 반복 일정에 Repeat 아이콘이 표시된다"
 
 **Given (준비)**:
+
 - 반복 일정 생성
   - title: "주간 회의"
   - date: "2025-10-02"
@@ -34,10 +35,12 @@
   - repeat.interval: 1
 
 **When (실행)**:
+
 - 주별 뷰로 전환
 - 해당 일자의 일정 확인
 
 **Then (검증)**:
+
 - Repeat 아이콘이 표시됨
 - 일정 제목 "주간 회의" 표시됨
 
@@ -48,6 +51,7 @@
 **테스트 케이스**: "월별 뷰에서 반복 일정에 Repeat 아이콘이 표시된다"
 
 **Given (준비)**:
+
 - 반복 일정 생성
   - title: "월간 보고"
   - date: "2025-10-15"
@@ -55,9 +59,11 @@
   - repeat.interval: 1
 
 **When (실행)**:
+
 - 월별 뷰에서 해당 일자 확인
 
 **Then (검증)**:
+
 - Repeat 아이콘이 표시됨
 - 일정 제목 "월간 보고" 표시됨
 
@@ -68,16 +74,19 @@
 **테스트 케이스**: "일반 일정(repeat.type === 'none')에는 Repeat 아이콘이 표시되지 않는다"
 
 **Given (준비)**:
+
 - 일반 일정 생성
   - title: "일반 회의"
   - date: "2025-10-02"
   - repeat.type: "none"
 
 **When (실행)**:
+
 - 주별 뷰로 전환
 - 해당 일자의 일정 확인
 
 **Then (검증)**:
+
 - Repeat 아이콘이 표시되지 않음
 - 일정 제목만 표시됨
 
@@ -88,6 +97,7 @@
 **테스트 케이스**: "알림 시간이 도래한 반복 일정은 두 아이콘이 모두 표시된다"
 
 **Given (준비)**:
+
 - 반복 일정 생성 (알림 설정)
   - title: "중요 회의"
   - date: "2025-10-01 09:00"
@@ -96,9 +106,11 @@
 - 시스템 시간을 08:51로 설정 (알림 시간 도래)
 
 **When (실행)**:
+
 - 월별 뷰에서 해당 일자 확인
 
 **Then (검증)**:
+
 - Notifications 아이콘 표시됨
 - Repeat 아이콘 표시됨
 - 두 아이콘이 나란히 표시됨
@@ -179,6 +191,7 @@
 ### 4.1 DOM 구조
 
 **주별 뷰**:
+
 ```
 <Stack data-testid="week-view">
   <TableCell>
@@ -194,6 +207,7 @@
 ```
 
 **월별 뷰**:
+
 ```
 <Stack data-testid="month-view">
   <TableCell>
@@ -211,12 +225,14 @@
 ### 4.2 아이콘 식별 방법
 
 **RTL 쿼리 우선순위**:
+
 1. `getByTestId('RepeatIcon')` (추천 - data-testid 추가 시)
 2. `getByRole()` + aria-label
 3. SVG 요소 직접 검색
 4. className 기반 검색
 
 **예시**:
+
 ```typescript
 // Material-UI Repeat 아이콘 찾기
 const repeatIcon = within(eventBox).queryByTestId('RepeatIcon');
@@ -232,22 +248,22 @@ const svg = within(eventBox).container.querySelector('svg[data-testid="RepeatIco
 
 ### 5.1 기능 커버리지
 
-| 기능 | 테스트 여부 |
-|------|-------------|
-| 주별 뷰 - 반복 일정 아이콘 표시 | ✅ |
-| 월별 뷰 - 반복 일정 아이콘 표시 | ✅ |
-| 일반 일정 - 아이콘 미표시 | ✅ |
-| 알림 + 반복 - 두 아이콘 표시 | ✅ |
+| 기능                            | 테스트 여부 |
+| ------------------------------- | ----------- |
+| 주별 뷰 - 반복 일정 아이콘 표시 | ✅          |
+| 월별 뷰 - 반복 일정 아이콘 표시 | ✅          |
+| 일반 일정 - 아이콘 미표시       | ✅          |
+| 알림 + 반복 - 두 아이콘 표시    | ✅          |
 
 ### 5.2 반복 유형별 커버리지
 
-| 반복 유형 | 테스트 여부 |
-|-----------|-------------|
-| daily | ✅ |
-| weekly | ✅ |
-| monthly | ✅ |
-| yearly | ⚠️ (weekly와 동일 로직) |
-| none | ✅ |
+| 반복 유형 | 테스트 여부             |
+| --------- | ----------------------- |
+| daily     | ✅                      |
+| weekly    | ✅                      |
+| monthly   | ✅                      |
+| yearly    | ⚠️ (weekly와 동일 로직) |
+| none      | ✅                      |
 
 ---
 
@@ -256,10 +272,12 @@ const svg = within(eventBox).container.querySelector('svg[data-testid="RepeatIco
 ### 6.1 테스트 통과 조건
 
 **Red 단계 (현재)**:
+
 - 모든 테스트 실패 예상
 - Repeat 아이콘이 아직 구현되지 않음
 
 **Green 단계 (Hermes 후)**:
+
 - 모든 테스트 통과
 - 4개 테스트 케이스 성공
 
@@ -294,4 +312,3 @@ const svg = within(eventBox).container.querySelector('svg[data-testid="RepeatIco
 
 **테스트 설계 완료 시각**: 2025-11-01 05:36:00  
 **다음 단계**: Poseidon (테스트 코드 작성 - Red)
-

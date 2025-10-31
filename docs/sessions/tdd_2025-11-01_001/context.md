@@ -15,8 +15,8 @@
 ## 1. 🌟 전체 진행 상태
 
 - **`overall_status`**: 🔄 in_progress
-- **`current_stage`**: Hermes
-- **`last_updated`**: 2025-11-01 05:39:30
+- **`current_stage`**: Apollo
+- **`last_updated`**: 2025-11-01 05:42:00
 
 ---
 
@@ -27,8 +27,8 @@
 | **Athena**   | ✅ done        | 2025-11-01 05:34:06 |
 | **Artemis**  | ✅ done        | 2025-11-01 05:36:30 |
 | **Poseidon** | ✅ done        | 2025-11-01 05:39:30 |
-| **Hermes**   | 🔄 in_progress | -                   |
-| **Apollo**   | ⏳ pending     | -                   |
+| **Hermes**   | ✅ done        | 2025-11-01 05:42:00 |
+| **Apollo**   | 🔄 in_progress | -                   |
 
 ---
 
@@ -39,7 +39,7 @@
 - **`feature_spec.md`**: docs/sessions/tdd_2025-11-01_001/feature_spec.md
 - **`test_spec.md`**: docs/sessions/tdd_2025-11-01_001/test_spec.md
 - **`test_code.md`**: docs/sessions/tdd_2025-11-01_001/test_code.md
-- **`impl_code.md`**: (생성 전)
+- **`impl_code.md`**: docs/sessions/tdd_2025-11-01_001/impl_code.md
 - **`refactor_report.md`**: (생성 전)
 
 ---
@@ -85,4 +85,3 @@
 | 버전 | 날짜       | 변경 내용   | 작성자 |
 | :--- | :--------- | :---------- | :----- |
 | 1.0  | 2025-11-01 | 세션 초기화 | Zeus   |
-

@@ -16,9 +16,11 @@
 ### 1.2 작업 범위
 
 **✅ 작업 대상:**
+
 - `src/App.tsx`의 캘린더 뷰 렌더링 로직 (주별/월별)
 
 **🚫 작업 제외:**
+
 - API 수정 (기존 API 활용)
 - 새로운 컴포넌트 생성 (기존 구조 활용)
 - 일정 목록 뷰 (이미 repeat 정보 표시 중)
@@ -36,7 +38,6 @@
 1. **주별 뷰** (`renderWeekView`):
    - 일정 박스 렌더링 위치: 184-212줄
    - 현재 구조: `<Stack direction="row">` + 알림 아이콘 + 제목
-   
 2. **월별 뷰** (`renderMonthView`):
    - 일정 박스 렌더링 위치: 271-300줄
    - 현재 구조: `<Stack direction="row">` + 알림 아이콘 + 제목
@@ -84,6 +85,7 @@ interface RepeatInfo {
 **조건**: `event.repeat.type !== 'none'`
 
 **아이콘**: Material-UI의 `Repeat` 아이콘 사용
+
 - import: `import { Repeat } from '@mui/icons-material';`
 - 크기: `fontSize="small"` (알림 아이콘과 동일)
 - 색상: `primary` (기본 색상, 테마에 따라 파란색 계열)
@@ -107,7 +109,6 @@ interface RepeatInfo {
 1. **주별 뷰** (`renderWeekView` 함수)
    - 파일: `src/App.tsx`
    - 위치: 약 201-210줄
-   
 2. **월별 뷰** (`renderMonthView` 함수)
    - 파일: `src/App.tsx`
    - 위치: 약 288-297줄
@@ -119,6 +120,7 @@ interface RepeatInfo {
 ### 4.1 주별 뷰 수정
 
 **수정 전:**
+
 ```typescript
 <Stack direction="row" spacing={1} alignItems="center">
   {isNotified && <Notifications fontSize="small" />}
@@ -129,6 +131,7 @@ interface RepeatInfo {
 ```
 
 **수정 후:**
+
 ```typescript
 <Stack direction="row" spacing={1} alignItems="center">
   {isNotified && <Notifications fontSize="small" />}
@@ -142,6 +145,7 @@ interface RepeatInfo {
 ### 4.2 월별 뷰 수정
 
 **수정 전:**
+
 ```typescript
 <Stack direction="row" spacing={1} alignItems="center">
   {isNotified && <Notifications fontSize="small" />}
@@ -152,6 +156,7 @@ interface RepeatInfo {
 ```
 
 **수정 후:**
+
 ```typescript
 <Stack direction="row" spacing={1} alignItems="center">
   {isNotified && <Notifications fontSize="small" />}
@@ -167,13 +172,23 @@ interface RepeatInfo {
 `src/App.tsx` 상단에 `Repeat` 아이콘 추가:
 
 **수정 전:**
+
 ```typescript
 import { Notifications, ChevronLeft, ChevronRight, Delete, Edit, Close } from '@mui/icons-material';
 ```
 
 **수정 후:**
+
 ```typescript
-import { Notifications, ChevronLeft, ChevronRight, Delete, Edit, Close, Repeat } from '@mui/icons-material';
+import {
+  Notifications,
+  ChevronLeft,
+  ChevronRight,
+  Delete,
+  Edit,
+  Close,
+  Repeat,
+} from '@mui/icons-material';
 ```
 
 ---
@@ -186,16 +201,12 @@ import { Notifications, ChevronLeft, ChevronRight, Delete, Edit, Close, Repeat }
 
 1. **일반 일정 (repeat.type === 'none')**
    - Repeat 아이콘이 표시되지 않아야 함
-   
 2. **매일 반복 일정 (repeat.type === 'daily')**
    - Repeat 아이콘이 표시되어야 함
-   
 3. **매주 반복 일정 (repeat.type === 'weekly')**
    - Repeat 아이콘이 표시되어야 함
-   
 4. **매월 반복 일정 (repeat.type === 'monthly')**
    - Repeat 아이콘이 표시되어야 함
-   
 5. **매년 반복 일정 (repeat.type === 'yearly')**
    - Repeat 아이콘이 표시되어야 함
 
@@ -205,10 +216,8 @@ import { Notifications, ChevronLeft, ChevronRight, Delete, Edit, Close, Repeat }
 
 1. **주별 뷰에서 반복 일정 표시**
    - 반복 일정 생성 후 주별 뷰에서 Repeat 아이콘 확인
-   
 2. **월별 뷰에서 반복 일정 표시**
    - 반복 일정 생성 후 월별 뷰에서 Repeat 아이콘 확인
-   
 3. **알림 아이콘과 반복 아이콘 동시 표시**
    - 알림 시간이 도래한 반복 일정의 경우 두 아이콘 모두 표시
 
@@ -223,16 +232,19 @@ import { Notifications, ChevronLeft, ChevronRight, Delete, Edit, Close, Repeat }
 ### 6.1 시각적 효과
 
 **일반 일정:**
+
 ```
 [🔔] 회의
 ```
 
 **반복 일정:**
+
 ```
 [🔁] 주간 회의
 ```
 
 **알림 + 반복 일정:**
+
 ```
 [🔔][🔁] 주간 회의
 ```
@@ -249,23 +261,25 @@ import { Notifications, ChevronLeft, ChevronRight, Delete, Edit, Close, Repeat }
 
 ### 7.1 수정 파일
 
-| 파일 | 수정 내용 | 영향도 |
-|------|-----------|--------|
-| `src/App.tsx` | import 추가 (1줄) | 낮음 |
-| `src/App.tsx` | 주별 뷰 아이콘 추가 (1줄) | 낮음 |
-| `src/App.tsx` | 월별 뷰 아이콘 추가 (1줄) | 낮음 |
+| 파일          | 수정 내용                 | 영향도 |
+| ------------- | ------------------------- | ------ |
+| `src/App.tsx` | import 추가 (1줄)         | 낮음   |
+| `src/App.tsx` | 주별 뷰 아이콘 추가 (1줄) | 낮음   |
+| `src/App.tsx` | 월별 뷰 아이콘 추가 (1줄) | 낮음   |
 
 **총 수정 라인**: 3줄
 
 ### 7.2 의존성
 
 **새로운 의존성 추가**: 없음 ✅
+
 - Material-UI는 이미 프로젝트에 설치되어 있음
 - `Repeat` 아이콘은 `@mui/icons-material` 패키지에 포함
 
 ### 7.3 기존 기능에 미치는 영향
 
 **영향 없음** ✅
+
 - 기존 렌더링 로직 변경 없음
 - 조건부 렌더링 추가로 기존 동작 유지
 - 성능 영향 미미 (조건문 1개 추가)
@@ -301,4 +315,3 @@ import { Notifications, ChevronLeft, ChevronRight, Delete, Edit, Close, Repeat }
 
 **명세 작성 완료 시각**: 2025-11-01 05:35:00  
 **다음 단계**: Artemis (테스트 설계)
-
