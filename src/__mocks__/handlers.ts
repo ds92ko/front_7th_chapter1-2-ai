@@ -53,6 +53,38 @@ export const handlers = [
 
     return new HttpResponse(null, { status: 404 });
   }),
+
+  http.put('/api/recurring-events/:repeatId', async ({ params, request }) => {
+    const { repeatId } = params;
+    const updateData = (await request.json()) as Partial<Event>;
+    const seriesEvents = mockEvents.filter((event) => event.repeat.id === repeatId);
+
+    if (seriesEvents.length === 0) {
+      return new HttpResponse('Recurring series not found', { status: 404 });
+    }
+
+    mockEvents = mockEvents.map((event) => {
+      if (event.repeat.id === repeatId) {
+        return {
+          ...event,
+          title: updateData.title !== undefined ? updateData.title : event.title,
+          description:
+            updateData.description !== undefined ? updateData.description : event.description,
+          location: updateData.location !== undefined ? updateData.location : event.location,
+          category: updateData.category !== undefined ? updateData.category : event.category,
+          notificationTime:
+            updateData.notificationTime !== undefined
+              ? updateData.notificationTime
+              : event.notificationTime,
+          startTime: updateData.startTime !== undefined ? updateData.startTime : event.startTime,
+          endTime: updateData.endTime !== undefined ? updateData.endTime : event.endTime,
+        };
+      }
+      return event;
+    });
+
+    return HttpResponse.json(seriesEvents);
+  }),
 ];
 
 // 테스트 간 상태 초기화를 위한 함수
