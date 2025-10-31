@@ -1,9 +1,10 @@
-# 🛠️ Hermes: 기능 구현 코드 (Green)
+# 🛠️ 기능 구현 코드 (Green + Refactor)
 
 > **세션 ID**: tdd_2025-10-31_001  
 > **작성일**: 2025-10-31  
-> **작성자**: Hermes  
-> **단계**: 4단계 - 코드 작성 (TDD Green)
+> **작성자**: Hermes (구현) → Apollo (리팩토링)  
+> **단계**: 4-5단계 - 코드 작성 (TDD Green) 및 리팩토링 (Refactor)  
+> **최종 업데이트**: 2025-10-31 (Apollo 리팩토링 완료)
 
 ---
 
@@ -146,11 +147,21 @@ MSW 핸들러에 상태 관리 기능을 추가하여 테스트 간 데이터 �
 
 ## 4. 🔍 구현 세부사항
 
-### 4.1 날짜 계산 로직
+### 4.1 날짜 계산 로직 (Apollo 리팩토링 완료)
 
 순수 JavaScript Date API만 사용하여 구현 (`date-fns` 사용 금지):
 
 ```typescript
+// 상수 정의 (Apollo가 추가)
+const MONTHS_IN_YEAR = 12;
+const DAYS_IN_WEEK = 7;
+const FEBRUARY = 2;
+const FEBRUARY_LEAP_DAYS = 29;
+const FEBRUARY_NORMAL_DAYS = 28;
+const MONTHS_WITH_30_DAYS = [4, 6, 9, 11];
+const DAYS_IN_LONG_MONTH = 31;
+const DAYS_IN_SHORT_MONTH = 30;
+
 // 윤년 판별
 export const isLeapYear = (year: number): boolean => {
   if (year % 400 === 0) return true;
@@ -159,27 +170,39 @@ export const isLeapYear = (year: number): boolean => {
   return false;
 };
 
-// 월별 일수 계산
+// 월별 일수 계산 (Apollo가 리팩토링)
 export const getDaysInMonth = (year: number, month: number): number => {
-  if (month === 2) {
-    return isLeapYear(year) ? 29 : 28;
+  if (month === FEBRUARY) {
+    return isLeapYear(year) ? FEBRUARY_LEAP_DAYS : FEBRUARY_NORMAL_DAYS;
   }
-  if ([4, 6, 9, 11].includes(month)) {
-    return 30;
+  if (MONTHS_WITH_30_DAYS.includes(month)) {
+    return DAYS_IN_SHORT_MONTH;
   }
-  return 31;
+  return DAYS_IN_LONG_MONTH;
+};
+
+// 유틸 함수 (Apollo가 추가)
+const formatDateString = (date: Date): string => {
+  return date.toISOString().split('T')[0];
+};
+
+const createEventForDate = (eventData: EventForm, date: Date): EventForm => {
+  return {
+    ...eventData,
+    date: formatDateString(date),
+  };
 };
 ```
 
-### 4.2 매월 반복 특수 규칙
+### 4.2 매월 반복 특수 규칙 (Apollo 리팩토링 완료)
 
 2월 29일로 시작한 경우 2월에만 생성:
 
 ```typescript
 // 특수 케이스: 2월 29일로 시작한 경우 2월에만 생성
-const isFebruary29 = startMonth === 2 && targetDay === 29;
+const isFebruary29 = startMonth === FEBRUARY && targetDay === FEBRUARY_LEAP_DAYS;
 
-if (isFebruary29 && month !== 2) {
+if (isFebruary29 && month !== FEBRUARY) {
   // 2월이 아닌 달은 건너뜀
   continue;
 }
@@ -222,9 +245,10 @@ if (eventData.repeat.type !== 'none') {
 
 ## 6. 📝 변경 이력
 
-| 버전 | 날짜       | 변경 내용                        | 작성자 |
-| :--- | :--------- | :------------------------------- | :----- |
-| 1.0  | 2025-10-31 | 반복 일정 기능 구현 완료 (Green) | Hermes |
+| 버전 | 날짜       | 변경 내용                           | 작성자 |
+| :--- | :--------- | :---------------------------------- | :----- |
+| 1.0  | 2025-10-31 | 반복 일정 기능 구현 완료 (Green)    | Hermes |
+| 1.1  | 2025-10-31 | 코드 리팩토링 완료 (Refactor)       | Apollo |
 
 ---
 
@@ -242,21 +266,38 @@ if (eventData.repeat.type !== 'none') {
 
 ---
 
-## 8. 🔄 Apollo 단계를 위한 참고사항
+## 8. 🎨 Apollo 리팩토링 완료
 
-**리팩토링 검토 필요:**
+### 8.1 리팩토링 내용
 
-- `generateMonthlyEvents`와 `generateYearlyEvents`의 반복 로직 유사성
-- 날짜 계산 로직의 추상화 가능성
-- 매직 넘버 상수화 (예: `12`, `7` 등)
+**✅ 완료된 개선사항:**
 
-**테스트 개선 제안:**
+1. **매직 넘버 상수화**
+   - `2`, `7`, `12`, `29`, `28`, `30`, `31` → 명확한 의미의 상수로 변환
+   - 예: `FEBRUARY`, `DAYS_IN_WEEK`, `MONTHS_IN_YEAR`
 
-- "반복 일정 저장 성공 시 이벤트 목록을 갱신한다" 테스트 검토 필요
-  - 초기 이벤트(`repeat.type='none'`)의 `repeat.id`는 undefined여야 정상
-  - 현재 테스트는 모든 이벤트의 `repeat.id`를 확인하므로 수정 필요
+2. **공통 유틸 함수 추출**
+   - `formatDateString()`: 날짜 문자열 변환 로직 통합
+   - `createEventForDate()`: 이벤트 생성 로직 통합
+
+3. **중복 코드 제거**
+   - 날짜 변환 로직 4회 반복 → 1개 함수로 통합
+   - 이벤트 생성 로직 4회 반복 → 1개 함수로 통합
+
+### 8.2 개선 효과
+
+| 항목 | 개선 전 | 개선 후 | 효과 |
+|------|---------|---------|------|
+| 매직 넘버 | 7개 위치 | 상수로 통합 | 가독성 향상 |
+| 중복 코드 | 날짜 변환 4회 | 1개 함수 | 유지보수성 향상 |
+| 테스트 통과율 | 147/147 | 147/147 | 기능 무변경 확인 ✅ |
+
+### 8.3 리팩토링 보고서
+
+상세 내용은 [`refactor_report.md`](./refactor_report.md) 참조
 
 ---
 
-**구현 완료 시각**: 2025-10-31 04:58  
-**다음 단계**: Apollo (리팩토링)
+**구현 완료 시각**: 2025-10-31 04:58 (Hermes)  
+**리팩토링 완료 시각**: 2025-10-31 05:14 (Apollo)  
+**다음 단계**: 최종 검증 및 파이프라인 완료

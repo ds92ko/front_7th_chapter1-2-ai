@@ -1,5 +1,15 @@
 import { EventForm } from '../types';
 
+// 상수 정의
+const MONTHS_IN_YEAR = 12;
+const DAYS_IN_WEEK = 7;
+const FEBRUARY = 2;
+const FEBRUARY_LEAP_DAYS = 29;
+const FEBRUARY_NORMAL_DAYS = 28;
+const MONTHS_WITH_30_DAYS = [4, 6, 9, 11];
+const DAYS_IN_LONG_MONTH = 31;
+const DAYS_IN_SHORT_MONTH = 30;
+
 /**
  * 윤년 판별 함수
  * 4로 나누어떨어지고, 100으로 나누어떨어지지 않거나, 400으로 나누어떨어지면 윤년
@@ -15,14 +25,30 @@ export const isLeapYear = (year: number): boolean => {
  * 특정 연도와 월의 일수를 반환하는 함수
  */
 export const getDaysInMonth = (year: number, month: number): number => {
-  // month는 1-12
-  if (month === 2) {
-    return isLeapYear(year) ? 29 : 28;
+  if (month === FEBRUARY) {
+    return isLeapYear(year) ? FEBRUARY_LEAP_DAYS : FEBRUARY_NORMAL_DAYS;
   }
-  if ([4, 6, 9, 11].includes(month)) {
-    return 30;
+  if (MONTHS_WITH_30_DAYS.includes(month)) {
+    return DAYS_IN_SHORT_MONTH;
   }
-  return 31;
+  return DAYS_IN_LONG_MONTH;
+};
+
+/**
+ * Date 객체를 YYYY-MM-DD 형식의 문자열로 변환
+ */
+const formatDateString = (date: Date): string => {
+  return date.toISOString().split('T')[0];
+};
+
+/**
+ * 이벤트 데이터를 특정 날짜로 복사
+ */
+const createEventForDate = (eventData: EventForm, date: Date): EventForm => {
+  return {
+    ...eventData,
+    date: formatDateString(date),
+  };
 };
 
 /**
@@ -41,11 +67,7 @@ export const generateDailyEvents = (
   let currentDate = new Date(start);
 
   while (currentDate <= end) {
-    const dateStr = currentDate.toISOString().split('T')[0];
-    events.push({
-      ...eventData,
-      date: dateStr,
-    });
+    events.push(createEventForDate(eventData, currentDate));
     currentDate.setDate(currentDate.getDate() + interval);
   }
 
@@ -68,12 +90,8 @@ export const generateWeeklyEvents = (
   let currentDate = new Date(start);
 
   while (currentDate <= end) {
-    const dateStr = currentDate.toISOString().split('T')[0];
-    events.push({
-      ...eventData,
-      date: dateStr,
-    });
-    currentDate.setDate(currentDate.getDate() + 7 * interval);
+    events.push(createEventForDate(eventData, currentDate));
+    currentDate.setDate(currentDate.getDate() + DAYS_IN_WEEK * interval);
   }
 
   return events;
@@ -97,18 +115,18 @@ export const generateMonthlyEvents = (
   const startMonth = start.getMonth() + 1;
 
   // 특수 케이스: 2월 29일로 시작한 경우 2월에만 생성
-  const isFebruary29 = startMonth === 2 && targetDay === 29;
+  const isFebruary29 = startMonth === FEBRUARY && targetDay === FEBRUARY_LEAP_DAYS;
 
   let year = start.getFullYear();
   let month = start.getMonth() + 1;
 
   while (true) {
     // 2월 29일 특수 규칙: 2월에만 생성
-    if (isFebruary29 && month !== 2) {
+    if (isFebruary29 && month !== FEBRUARY) {
       // 다음 월로 이동
       month += interval;
-      while (month > 12) {
-        month -= 12;
+      while (month > MONTHS_IN_YEAR) {
+        month -= MONTHS_IN_YEAR;
         year += 1;
       }
       // 종료 조건 체크
@@ -125,17 +143,13 @@ export const generateMonthlyEvents = (
 
       if (currentDate > end) break;
 
-      const dateStr = currentDate.toISOString().split('T')[0];
-      events.push({
-        ...eventData,
-        date: dateStr,
-      });
+      events.push(createEventForDate(eventData, currentDate));
     }
 
     // 다음 월로 이동
     month += interval;
-    while (month > 12) {
-      month -= 12;
+    while (month > MONTHS_IN_YEAR) {
+      month -= MONTHS_IN_YEAR;
       year += 1;
     }
 
@@ -175,11 +189,7 @@ export const generateYearlyEvents = (
 
       if (currentDate > end) break;
 
-      const dateStr = currentDate.toISOString().split('T')[0];
-      events.push({
-        ...eventData,
-        date: dateStr,
-      });
+      events.push(createEventForDate(eventData, currentDate));
     }
 
     // 다음 연도로 이동
