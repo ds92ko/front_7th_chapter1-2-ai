@@ -108,32 +108,25 @@ export const useEventOperations = (
               }
             });
 
-            // 일괄 업데이트 및 삭제
-            const promises = [];
-
+            // 일괄 업데이트 및 삭제 (순차 실행으로 레이스 컨디션 방지)
             if (eventsToUpdate.length > 0) {
               console.log(`📦 일괄 업데이트: ${eventsToUpdate.length}개`);
-              promises.push(
-                fetch('/api/events-list', {
-                  method: 'PUT',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ events: eventsToUpdate }),
-                })
-              );
+              await fetch('/api/events-list', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ events: eventsToUpdate }),
+              });
             }
 
             if (eventIdsToDelete.length > 0) {
               console.log(`🗑️ 일괄 삭제: ${eventIdsToDelete.length}개`);
-              promises.push(
-                fetch('/api/events-list', {
-                  method: 'DELETE',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ eventIds: eventIdsToDelete }),
-                })
-              );
+              await fetch('/api/events-list', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ eventIds: eventIdsToDelete }),
+              });
             }
 
-            await Promise.all(promises);
             console.log('✅ 모든 업데이트 완료');
             response = { ok: true } as Response;
           } else {
