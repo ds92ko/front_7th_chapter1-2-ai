@@ -4,7 +4,11 @@ import { useEffect, useState } from 'react';
 import { Event, EventForm } from '../types';
 import { generateRecurringEvents } from '../utils/recurringEvents';
 
-export const useEventOperations = (editing: boolean, onSave?: () => void) => {
+export const useEventOperations = (
+  editing: boolean,
+  onSave?: () => void,
+  editingEvent?: Event | null
+) => {
   const [events, setEvents] = useState<Event[]>([]);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -33,20 +37,22 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
 
           // 같은 시리즈의 모든 일정 가져오기
           const seriesEvents = events.filter((e) => e.repeat.id === repeatId);
-          const firstEvent = seriesEvents[0];
+
+          // 원래 클릭한 일정을 기준으로 비교 (editingEvent)
+          const originalEvent = editingEvent || seriesEvents[0];
 
           // 날짜/시간 변경 여부 확인
-          const dateChanged = editingEventData.date !== firstEvent.date;
+          const dateChanged = editingEventData.date !== originalEvent.date;
           const timeChanged =
-            editingEventData.startTime !== firstEvent.startTime ||
-            editingEventData.endTime !== firstEvent.endTime;
+            editingEventData.startTime !== originalEvent.startTime ||
+            editingEventData.endTime !== originalEvent.endTime;
 
           // 날짜나 시간이 변경된 경우
           if (dateChanged || timeChanged) {
             // 날짜 차이 계산
             let dateDiff = 0;
             if (dateChanged) {
-              const oldDate = new Date(firstEvent.date);
+              const oldDate = new Date(originalEvent.date);
               const newDate = new Date(editingEventData.date);
               dateDiff = Math.floor(
                 (newDate.getTime() - oldDate.getTime()) / (1000 * 60 * 60 * 24)
@@ -54,7 +60,7 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
             }
 
             // 종료일 확인
-            const endDate = firstEvent.repeat.endDate;
+            const endDate = originalEvent.repeat.endDate;
 
             // 각 일정을 개별적으로 업데이트 또는 삭제
             const updatePromises = seriesEvents.map(async (event) => {
