@@ -14,9 +14,9 @@
 
 ## 1. 🌟 전체 진행 상태
 
-- **`overall_status`**: 🔄 in_progress
-- **`current_stage`**: Apollo
-- **`last_updated`**: 2025-11-01 05:42:00
+- **`overall_status`**: ✅ completed
+- **`current_stage`**: Finished
+- **`last_updated`**: 2025-11-01 05:43:00
 
 ---
 
@@ -28,7 +28,7 @@
 | **Artemis**  | ✅ done        | 2025-11-01 05:36:30 |
 | **Poseidon** | ✅ done        | 2025-11-01 05:39:30 |
 | **Hermes**   | ✅ done        | 2025-11-01 05:42:00 |
-| **Apollo**   | 🔄 in_progress | -                   |
+| **Apollo**   | ✅ done        | 2025-11-01 05:43:00 |
 
 ---
 
@@ -40,7 +40,7 @@
 - **`test_spec.md`**: docs/sessions/tdd_2025-11-01_001/test_spec.md
 - **`test_code.md`**: docs/sessions/tdd_2025-11-01_001/test_code.md
 - **`impl_code.md`**: docs/sessions/tdd_2025-11-01_001/impl_code.md
-- **`refactor_report.md`**: (생성 전)
+- **`refactor_report.md`**: docs/sessions/tdd_2025-11-01_001/refactor_report.md
 
 ---
 
