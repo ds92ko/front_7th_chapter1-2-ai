@@ -22,15 +22,34 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
     }
   };
 
-  const saveEvent = async (eventData: Event | EventForm) => {
+  const saveEvent = async (eventData: Event | EventForm, editAllRecurring = false) => {
     try {
       let response;
       if (editing) {
-        response = await fetch(`/api/events/${(eventData as Event).id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(eventData),
-        });
+        // 반복 일정 전체 수정
+        if (editAllRecurring && (eventData as Event).repeat?.id) {
+          const repeatId = (eventData as Event).repeat.id;
+          response = await fetch(`/api/recurring-events/${repeatId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: eventData.title,
+              description: eventData.description,
+              location: eventData.location,
+              category: eventData.category,
+              notificationTime: eventData.notificationTime,
+              startTime: eventData.startTime,
+              endTime: eventData.endTime,
+            }),
+          });
+        } else {
+          // 단일 일정 수정
+          response = await fetch(`/api/events/${(eventData as Event).id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(eventData),
+          });
+        }
       } else {
         // 반복 일정인 경우
         if (eventData.repeat.type !== 'none') {

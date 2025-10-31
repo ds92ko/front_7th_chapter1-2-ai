@@ -112,6 +112,9 @@ function App() {
   const [isOverlapDialogOpen, setIsOverlapDialogOpen] = useState(false);
   const [overlappingEvents, setOverlappingEvents] = useState<Event[]>([]);
 
+  const [isRepeatEditDialogOpen, setIsRepeatEditDialogOpen] = useState(false);
+  const [pendingEventData, setPendingEventData] = useState<Event | EventForm | null>(null);
+
   const { enqueueSnackbar } = useSnackbar();
 
   const addOrUpdateEvent = async () => {
@@ -138,9 +141,18 @@ function App() {
         type: isRepeating ? repeatType : 'none',
         interval: repeatInterval,
         endDate: repeatEndDate || undefined,
+        id: editingEvent?.repeat.id,
       },
       notificationTime,
     };
+
+    // 반복 일정 수정인지 확인
+    if (editingEvent && editingEvent.repeat.type !== 'none') {
+      // 다이얼로그 표시
+      setPendingEventData(eventData);
+      setIsRepeatEditDialogOpen(true);
+      return;
+    }
 
     const overlapping = findOverlappingEvents(eventData, events);
     if (overlapping.length > 0) {
@@ -150,6 +162,35 @@ function App() {
       await saveEvent(eventData);
       resetForm();
     }
+  };
+
+  const handleEditSingleEvent = async () => {
+    if (!pendingEventData) return;
+
+    // 반복 정보 제거하여 단일 일정으로 변환
+    const singleEventData = {
+      ...pendingEventData,
+      repeat: { type: 'none' as const, interval: 0 },
+    };
+
+    await saveEvent(singleEventData, false);
+    setIsRepeatEditDialogOpen(false);
+    setPendingEventData(null);
+    resetForm();
+  };
+
+  const handleEditAllEvents = async () => {
+    if (!pendingEventData || !(pendingEventData as Event).repeat?.id) return;
+
+    await saveEvent(pendingEventData, true);
+    setIsRepeatEditDialogOpen(false);
+    setPendingEventData(null);
+    resetForm();
+  };
+
+  const handleRepeatEditDialogClose = () => {
+    setIsRepeatEditDialogOpen(false);
+    setPendingEventData(null);
   };
 
   const renderWeekView = () => {
@@ -558,6 +599,9 @@ function App() {
                   <Stack>
                     <Stack direction="row" spacing={1} alignItems="center">
                       {notifiedEvents.includes(event.id) && <Notifications color="error" />}
+                      {event.repeat.type !== 'none' && (
+                        <Repeat fontSize="small" color="primary" data-testid="RepeatIcon" />
+                      )}
                       <Typography
                         fontWeight={notifiedEvents.includes(event.id) ? 'bold' : 'normal'}
                         color={notifiedEvents.includes(event.id) ? 'error' : 'inherit'}
@@ -646,6 +690,17 @@ function App() {
           >
             계속 진행
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={isRepeatEditDialogOpen} onClose={handleRepeatEditDialogClose}>
+        <DialogTitle>반복 일정 수정</DialogTitle>
+        <DialogContent>
+          <DialogContentText>해당 일정만 수정하시겠어요?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditSingleEvent}>예</Button>
+          <Button onClick={handleEditAllEvents}>아니오</Button>
         </DialogActions>
       </Dialog>
 
