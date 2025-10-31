@@ -10,12 +10,14 @@
 ## 1. 구현 개요
 
 ### 1.1 구현 목표
+
 - 반복 일정 수정 시 다이얼로그를 통해 "단일 수정" 또는 "전체 수정" 선택
 - "예" 선택: 해당 일정만 단일 일정으로 변환하여 수정
 - "아니오" 선택: 같은 시리즈의 모든 반복 일정 수정
 - 모든 테스트 통과 (Green Phase 달성)
 
 ### 1.2 구현 범위
+
 - **수정 파일**:
   - `src/hooks/useEventOperations.ts`: API 호출 로직 추가
   - `src/App.tsx`: 다이얼로그 UI 및 핸들러 추가
@@ -33,6 +35,7 @@
 #### 변경 사항: `saveEvent` 함수에 `editAllRecurring` 파라미터 추가
 
 **변경 전**:
+
 ```typescript
 const saveEvent = async (eventData: Event | EventForm) => {
   try {
@@ -52,6 +55,7 @@ const saveEvent = async (eventData: Event | EventForm) => {
 ```
 
 **변경 후**:
+
 ```typescript
 const saveEvent = async (eventData: Event | EventForm, editAllRecurring = false) => {
   try {
@@ -90,6 +94,7 @@ const saveEvent = async (eventData: Event | EventForm, editAllRecurring = false)
 ```
 
 **핵심 로직**:
+
 - `editAllRecurring` 파라미터로 단일 수정과 전체 수정 구분
 - 전체 수정 시 `PUT /api/recurring-events/:repeatId` 호출
 - 시간/제목/설명/위치/카테고리/알림시간만 전송 (날짜는 서버에서 유지)
@@ -106,6 +111,7 @@ const [pendingEventData, setPendingEventData] = useState<Event | EventForm | nul
 ```
 
 **설명**:
+
 - `isRepeatEditDialogOpen`: 다이얼로그 표시 여부
 - `pendingEventData`: 사용자가 입력한 이벤트 데이터 임시 저장
 
@@ -114,6 +120,7 @@ const [pendingEventData, setPendingEventData] = useState<Event | EventForm | nul
 #### 2.2.2 `addOrUpdateEvent` 함수 수정
 
 **변경 전**:
+
 ```typescript
 const addOrUpdateEvent = async () => {
   // 유효성 검사...
@@ -147,6 +154,7 @@ const addOrUpdateEvent = async () => {
 ```
 
 **변경 후**:
+
 ```typescript
 const addOrUpdateEvent = async () => {
   // 유효성 검사...
@@ -189,6 +197,7 @@ const addOrUpdateEvent = async () => {
 ```
 
 **핵심 로직**:
+
 - 반복 일정 수정 시 (`editingEvent.repeat.type !== 'none'`) 다이얼로그 표시
 - `repeat.id`를 이벤트 데이터에 포함하여 전달
 
@@ -197,6 +206,7 @@ const addOrUpdateEvent = async () => {
 #### 2.2.3 다이얼로그 핸들러 추가
 
 **"예" 선택 핸들러 (단일 수정)**:
+
 ```typescript
 const handleEditSingleEvent = async () => {
   if (!pendingEventData) return;
@@ -215,6 +225,7 @@ const handleEditSingleEvent = async () => {
 ```
 
 **"아니오" 선택 핸들러 (전체 수정)**:
+
 ```typescript
 const handleEditAllEvents = async () => {
   if (!pendingEventData || !(pendingEventData as Event).repeat?.id) return;
@@ -227,6 +238,7 @@ const handleEditAllEvents = async () => {
 ```
 
 **다이얼로그 취소 핸들러**:
+
 ```typescript
 const handleRepeatEditDialogClose = () => {
   setIsRepeatEditDialogOpen(false);
@@ -254,6 +266,7 @@ const handleRepeatEditDialogClose = () => {
 ```
 
 **설명**:
+
 - Material-UI Dialog 컴포넌트 활용
 - 명확한 질문과 버튼 레이블로 사용자 의도 확인
 
@@ -264,6 +277,7 @@ const handleRepeatEditDialogClose = () => {
 **위치**: 이벤트 리스트 렌더링 부분 (라인 600~611)
 
 **변경 전**:
+
 ```tsx
 <Stack>
   <Stack direction="row" spacing={1} alignItems="center">
@@ -279,6 +293,7 @@ const handleRepeatEditDialogClose = () => {
 ```
 
 **변경 후**:
+
 ```tsx
 <Stack>
   <Stack direction="row" spacing={1} alignItems="center">
@@ -297,6 +312,7 @@ const handleRepeatEditDialogClose = () => {
 ```
 
 **설명**:
+
 - 반복 일정 (`repeat.type !== 'none'`) 시 Repeat 아이콘 표시
 - 캘린더 뷰와 일관된 UI 제공
 
@@ -307,6 +323,7 @@ const handleRepeatEditDialogClose = () => {
 #### `src/__tests__/medium.repeatEventEdit.spec.tsx` 수정
 
 **TC-005 수정 (반복 아이콘 제거 확인)**:
+
 ```typescript
 // 수정된 일정에 반복 아이콘이 없는지 확인
 await waitFor(() => {
@@ -323,6 +340,7 @@ await waitFor(() => {
 ```
 
 **TC-006 수정 (반복 아이콘 유지 확인)**:
+
 ```typescript
 // 모든 일정에 반복 아이콘이 유지되는지 확인
 await waitFor(() => {
@@ -335,6 +353,7 @@ await waitFor(() => {
 ```
 
 **이유**:
+
 - 이벤트 리스트는 `<Box>` 컴포넌트를 사용하므로 `closest('li')` 대신 다른 방법 사용
 - TC-006은 아이콘 개수를 세는 방식으로 단순화
 
@@ -425,11 +444,13 @@ Test Files  13 passed (13)
 ## 5. 코드 품질
 
 ### 5.1 ESLint & Prettier
+
 - ✅ ESLint 경고/오류 없음
 - ✅ Prettier 포맷팅 완료
 - ✅ 일관된 코드 스타일 유지
 
 ### 5.2 TypeScript
+
 - ✅ 타입 오류 없음
 - ✅ `Partial<Event>` 타입 사용으로 안전성 확보
 - ✅ Null-safe 코드 (`pendingEventData` 체크)
@@ -438,33 +459,36 @@ Test Files  13 passed (13)
 
 ## 6. 변경 사항 요약
 
-| 항목                   | 내용                                                      |
-| ---------------------- | --------------------------------------------------------- |
-| 수정 파일              | `useEventOperations.ts`, `App.tsx`                        |
-| 추가 라인 수           | 약 80줄                                                   |
-| API 엔드포인트         | `PUT /api/recurring-events/:repeatId` (기존 API 활용)    |
-| UI 컴포넌트            | Material-UI Dialog 활용                                   |
-| 의존성 추가            | 없음                                                      |
-| Breaking Changes       | 없음                                                      |
-| 테스트 통과율          | 100% (154/154)                                            |
-| 기존 코드 영향         | 최소화 (기존 로직에 조건 추가)                            |
-| 사용자 경험 개선       | 반복 일정 수정 시 의도 명확히 확인                        |
+| 항목             | 내용                                                  |
+| ---------------- | ----------------------------------------------------- |
+| 수정 파일        | `useEventOperations.ts`, `App.tsx`                    |
+| 추가 라인 수     | 약 80줄                                               |
+| API 엔드포인트   | `PUT /api/recurring-events/:repeatId` (기존 API 활용) |
+| UI 컴포넌트      | Material-UI Dialog 활용                               |
+| 의존성 추가      | 없음                                                  |
+| Breaking Changes | 없음                                                  |
+| 테스트 통과율    | 100% (154/154)                                        |
+| 기존 코드 영향   | 최소화 (기존 로직에 조건 추가)                        |
+| 사용자 경험 개선 | 반복 일정 수정 시 의도 명확히 확인                    |
 
 ---
 
 ## 7. 구현 시 고려사항
 
 ### 7.1 에러 처리
+
 - `pendingEventData`가 null인 경우 early return
 - `repeat.id`가 없는 경우 전체 수정 불가 처리
 - API 호출 실패 시 에러 토스트 표시 (기존 로직 활용)
 
 ### 7.2 사용자 경험
+
 - 다이얼로그 취소 (ESC 또는 배경 클릭) 시 수정 취소
 - 명확한 버튼 레이블 ("예", "아니오")
 - 수정 후 폼 초기화 (`resetForm()`)
 
 ### 7.3 성능
+
 - 전체 수정 시 1번의 API 호출로 모든 일정 업데이트 (벌크 업데이트)
 - 불필요한 리렌더링 최소화
 
@@ -473,17 +497,20 @@ Test Files  13 passed (13)
 ## 8. 향후 개선 사항
 
 ### 8.1 가능한 개선
+
 - 다이얼로그에 "현재 수정하려는 내용" 미리보기 표시
 - "이후 모든 일정" 옵션 추가 (현재는 "모든 일정")
 - 반복 규칙 자체를 수정할 수 있는 기능 추가
 
 ### 8.2 제약사항
+
 - 날짜 변경 시 전체 시리즈의 날짜 동기화는 서버에서 처리
 - 반복 규칙(type, interval, endDate)은 수정 불가 (기존 시리즈 유지)
 
 ---
 
 ## 9. 참조 자료
+
 - `feature_spec.md`: 기능 명세서
 - `test_spec.md`: 테스트 설계 명세서
 - `test_code.md`: 테스트 코드 문서
@@ -504,4 +531,3 @@ Test Files  13 passed (13)
 - [x] 사용자 경험이 개선되었는가?
 - [x] 구현 문서가 완전한가?
 - [x] 다음 단계(Apollo)를 위한 준비가 완료되었는가?
-
