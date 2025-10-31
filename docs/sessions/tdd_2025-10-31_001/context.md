@@ -15,8 +15,8 @@
 ## 1. 🌟 전체 진행 상태
 
 - **`overall_status`**: 🔄 in_progress
-- **`current_stage`**: Artemis
-- **`last_updated`**: 2025-10-31 00:10:00
+- **`current_stage`**: Hermes
+- **`last_updated`**: 2025-10-31 00:30:00
 
 ---
 
@@ -25,9 +25,9 @@
 | 에이전트명   | 상태           | 완료 시간           |
 | :----------- | :------------- | :------------------ |
 | **Athena**   | ✅ done        | 2025-10-31 00:10:00 |
-| **Artemis**  | 🔄 in_progress | -                   |
-| **Poseidon** | ⏳ pending     | -                   |
-| **Hermes**   | ⏳ pending     | -                   |
+| **Artemis**  | ✅ done        | 2025-10-31 00:20:00 |
+| **Poseidon** | ✅ done        | 2025-10-31 00:30:00 |
+| **Hermes**   | 🔄 in_progress | -                   |
 | **Apollo**   | ⏳ pending     | -                   |
 
 ---
@@ -37,8 +37,8 @@
 각 에이전트가 생성한 주요 산출물 파일의 경로입니다.
 
 - **`feature_spec.md`**: docs/sessions/tdd_2025-10-31_001/feature_spec.md
-- **`test_spec.md`**: (생성 전)
-- **`test_code.md`**: (생성 전)
+- **`test_spec.md`**: docs/sessions/tdd_2025-10-31_001/test_spec.md
+- **`test_code.md`**: docs/sessions/tdd_2025-10-31_001/test_code.md
 - **`impl_code.md`**: (생성 전)
 - **`refactor_report.md`**: (생성 전)
 
