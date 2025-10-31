@@ -101,7 +101,7 @@ function App() {
     editEvent,
   } = useEventForm();
 
-  const { events, saveEvent, deleteEvent } = useEventOperations(
+  const { events, fetchEvents, saveEvent, deleteEvent } = useEventOperations(
     Boolean(editingEvent),
     () => setEditingEvent(null),
     editingEvent
@@ -116,6 +116,9 @@ function App() {
 
   const [isRepeatEditDialogOpen, setIsRepeatEditDialogOpen] = useState(false);
   const [pendingEventData, setPendingEventData] = useState<Event | EventForm | null>(null);
+
+  const [isRepeatDeleteDialogOpen, setIsRepeatDeleteDialogOpen] = useState(false);
+  const [pendingDeleteEvent, setPendingDeleteEvent] = useState<Event | null>(null);
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -193,6 +196,55 @@ function App() {
   const handleRepeatEditDialogClose = () => {
     setIsRepeatEditDialogOpen(false);
     setPendingEventData(null);
+  };
+
+  const handleDeleteClick = async (event: Event) => {
+    // 반복 일정 삭제인지 확인
+    if (event.repeat.type !== 'none') {
+      // 다이얼로그 표시
+      setPendingDeleteEvent(event);
+      setIsRepeatDeleteDialogOpen(true);
+    } else {
+      // 단일 일정 즉시 삭제
+      await deleteEvent(event.id);
+    }
+  };
+
+  const handleDeleteSingleEvent = async () => {
+    if (!pendingDeleteEvent) return;
+
+    await deleteEvent(pendingDeleteEvent.id);
+    setIsRepeatDeleteDialogOpen(false);
+    setPendingDeleteEvent(null);
+  };
+
+  const handleDeleteAllEvents = async () => {
+    if (!pendingDeleteEvent?.repeat?.id) return;
+
+    const repeatId = pendingDeleteEvent.repeat.id;
+    try {
+      const response = await fetch(`/api/recurring-events/${repeatId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete recurring events');
+      }
+
+      await fetchEvents();
+      enqueueSnackbar('반복 일정이 삭제되었습니다.', { variant: 'info' });
+    } catch (error) {
+      console.error('Error deleting recurring events:', error);
+      enqueueSnackbar('일정 삭제 실패', { variant: 'error' });
+    }
+
+    setIsRepeatDeleteDialogOpen(false);
+    setPendingDeleteEvent(null);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setIsRepeatDeleteDialogOpen(false);
+    setPendingDeleteEvent(null);
   };
 
   const renderWeekView = () => {
@@ -642,7 +694,7 @@ function App() {
                     <IconButton aria-label="Edit event" onClick={() => editEvent(event)}>
                       <Edit />
                     </IconButton>
-                    <IconButton aria-label="Delete event" onClick={() => deleteEvent(event.id)}>
+                    <IconButton aria-label="Delete event" onClick={() => handleDeleteClick(event)}>
                       <Delete />
                     </IconButton>
                   </Stack>
@@ -703,6 +755,17 @@ function App() {
         <DialogActions>
           <Button onClick={handleEditSingleEvent}>예</Button>
           <Button onClick={handleEditAllEvents}>아니오</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={isRepeatDeleteDialogOpen} onClose={handleDeleteDialogClose}>
+        <DialogTitle>반복 일정 삭제</DialogTitle>
+        <DialogContent>
+          <DialogContentText>해당 일정만 삭제하시겠어요?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteSingleEvent}>예</Button>
+          <Button onClick={handleDeleteAllEvents}>아니오</Button>
         </DialogActions>
       </Dialog>
 
