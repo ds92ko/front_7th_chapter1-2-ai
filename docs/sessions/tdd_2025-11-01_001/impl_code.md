@@ -16,6 +16,7 @@
 ### 1.2 구현 범위
 
 **✅ 구현 완료:**
+
 - import 추가 (1줄)
 - 주별 뷰 아이콘 추가 (1줄)
 - 월별 뷰 아이콘 추가 (1줄)
@@ -31,7 +32,15 @@
 **파일**: `src/App.tsx` (1줄)
 
 ```typescript
-import { Notifications, ChevronLeft, ChevronRight, Delete, Edit, Close, Repeat } from '@mui/icons-material';
+import {
+  Notifications,
+  ChevronLeft,
+  ChevronRight,
+  Delete,
+  Edit,
+  Close,
+  Repeat,
+} from '@mui/icons-material';
 ```
 
 ### 2.2 주별 뷰 - Repeat 아이콘 추가
@@ -120,4 +129,3 @@ import { Notifications, ChevronLeft, ChevronRight, Delete, Edit, Close, Repeat }
 
 **구현 완료 시각**: 2025-11-01 05:42:00  
 **다음 단계**: Apollo (리팩토링)
-
