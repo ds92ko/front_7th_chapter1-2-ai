@@ -176,7 +176,7 @@ function App() {
     // 반복 정보 제거하여 단일 일정으로 변환
     const singleEventData = {
       ...pendingEventData,
-      repeat: { type: 'none' as const, interval: 0 },
+      repeat: { type: 'none' as const, interval: 0, id: undefined, endDate: undefined },
     };
 
     await saveEvent(singleEventData, false);
