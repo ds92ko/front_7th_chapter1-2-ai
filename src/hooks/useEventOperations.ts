@@ -43,14 +43,52 @@ export const useEventOperations = (
           // 원래 클릭한 일정을 기준으로 비교 (editingEvent)
           const originalEvent = editingEvent || seriesEvents[0];
 
+          // 반복 설정 변경 여부 확인
+          const repeatSettingsChanged =
+            editingEventData.repeat.type !== originalEvent.repeat.type ||
+            editingEventData.repeat.interval !== originalEvent.repeat.interval ||
+            editingEventData.repeat.endDate !== originalEvent.repeat.endDate;
+
           // 날짜/시간 변경 여부 확인
           const dateChanged = editingEventData.date !== originalEvent.date;
           const timeChanged =
             editingEventData.startTime !== originalEvent.startTime ||
             editingEventData.endTime !== originalEvent.endTime;
 
-          // 날짜나 시간이 변경된 경우
-          if (dateChanged || timeChanged) {
+          // 반복 설정이 변경된 경우 -> 전체 삭제 후 재생성
+          if (repeatSettingsChanged) {
+            console.log('🔥 반복 설정 변경 감지 - 전체 재생성');
+
+            // 기존 시리즈의 모든 일정 삭제
+            const eventIdsToDelete = seriesEvents.map((e) => e.id);
+            await fetch('/api/events-list', {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ eventIds: eventIdsToDelete }),
+            });
+
+            // 첫 번째 일정의 날짜를 시작점으로 새로운 반복 일정 생성
+            const firstEventDate = seriesEvents[0].date;
+            const eventFormData: EventForm = {
+              title: editingEventData.title,
+              date: firstEventDate, // 원래 시작 날짜 유지
+              startTime: editingEventData.startTime,
+              endTime: editingEventData.endTime,
+              description: editingEventData.description,
+              location: editingEventData.location,
+              category: editingEventData.category,
+              repeat: editingEventData.repeat,
+              notificationTime: editingEventData.notificationTime,
+            };
+            const newRecurringEvents = generateRecurringEvents(eventFormData);
+
+            response = await fetch('/api/events-list', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ events: newRecurringEvents }),
+            });
+          } else if (dateChanged || timeChanged) {
+            // 날짜나 시간만 변경된 경우
             // 날짜 차이 계산
             let dateDiff = 0;
             if (dateChanged) {
@@ -157,9 +195,18 @@ export const useEventOperations = (
             });
 
             // 새로운 반복 일정들 생성 (id 제거하고 EventForm으로 변환)
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-            const { id: _id, ...eventFormData } = editingEventData;
-            const recurringEvents = generateRecurringEvents(eventFormData as EventForm);
+            const eventFormData: EventForm = {
+              title: editingEventData.title,
+              date: editingEventData.date,
+              startTime: editingEventData.startTime,
+              endTime: editingEventData.endTime,
+              description: editingEventData.description,
+              location: editingEventData.location,
+              category: editingEventData.category,
+              repeat: editingEventData.repeat,
+              notificationTime: editingEventData.notificationTime,
+            };
+            const recurringEvents = generateRecurringEvents(eventFormData);
             response = await fetch('/api/events-list', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
