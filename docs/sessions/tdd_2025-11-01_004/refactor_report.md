@@ -20,6 +20,7 @@
 **결론**: ✅ **리팩토링 불필요**
 
 Hermes가 작성한 코드는 이미 다음 조건을 만족합니다:
+
 - ✅ 기존 패턴 재사용 (반복 일정 수정 다이얼로그와 동일한 구조)
 - ✅ 코드 중복 최소화
 - ✅ 명확한 함수명 및 변수명
@@ -50,10 +51,10 @@ const [pendingDeleteEvent, setPendingDeleteEvent] = useState<Event | null>(null)
 #### 2.1.2 명확한 함수 분리
 
 ```typescript
-handleDeleteClick          // 진입점: 반복/단일 분기
-handleDeleteSingleEvent    // 단일 삭제
-handleDeleteAllEvents      // 전체 삭제
-handleDeleteDialogClose    // 취소
+handleDeleteClick; // 진입점: 반복/단일 분기
+handleDeleteSingleEvent; // 단일 삭제
+handleDeleteAllEvents; // 전체 삭제
+handleDeleteDialogClose; // 취소
 ```
 
 **평가**: 각 함수가 단일 책임을 가지며, 이름이 명확함
@@ -143,6 +144,7 @@ const handleDeleteDialogClose = () => {
 **Apollo의 판단**: ❌ **개선 불채택**
 
 **이유**:
+
 1. **과도한 추상화**: 2줄의 코드를 함수로 추출하는 것은 오히려 복잡도를 높임
 2. **일관성 저하**: 기존 `handleRepeatEditDialogClose`도 동일한 패턴을 사용 중
 3. **명확성**: 현재 코드가 더 직관적이고 명확함
@@ -232,6 +234,7 @@ if (!response.ok) {
 **🎉 리팩토링 불필요 (No Refactoring Needed)**
 
 **근거**:
+
 1. ✅ 코드 품질이 이미 높음
 2. ✅ 기존 패턴과 일관성 유지
 3. ✅ 모든 테스트 통과
@@ -244,6 +247,7 @@ if (!response.ok) {
 **종합 점수**: 9.5/10
 
 **강점**:
+
 - 기존 패턴 재사용 (일관성)
 - 명확한 함수 분리 (가독성)
 - 적절한 에러 처리 (안정성)
@@ -263,6 +267,7 @@ if (!response.ok) {
 ### 8.2 향후 개선 제안
 
 만약 향후 유사한 다이얼로그가 3개 이상 추가된다면:
+
 1. 공통 다이얼로그 컴포넌트 추출 고려
 2. 상태 관리 로직 Custom Hook으로 추출 고려
 
@@ -288,4 +293,3 @@ if (!response.ok) {
 **Hermes는 탁월한 구현을 완성했습니다.** 🎉
 
 기존 코드 패턴을 완벽히 재사용하고, 명확하고 유지보수 가능한 코드를 작성했으며, 모든 테스트를 통과했습니다. 추가 리팩토링은 실질적 가치를 제공하지 않으므로, **현재 코드를 최종 버전으로 채택합니다.**
-

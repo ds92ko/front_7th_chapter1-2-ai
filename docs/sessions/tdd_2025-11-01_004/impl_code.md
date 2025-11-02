@@ -195,4 +195,3 @@ const handleDeleteDialogClose = () => {
 - 리팩토링 대상: Hermes가 작성한 코드
 - 제약사항: 기존 코드는 수정 불가
 - 목표: 코드 품질 개선, 중복 제거, 가독성 향상
-
