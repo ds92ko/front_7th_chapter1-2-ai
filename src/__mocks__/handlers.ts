@@ -21,10 +21,11 @@ export const handlers = [
   http.post('/api/events-list', async ({ request }) => {
     const body = (await request.json()) as { events: Event[] };
     // 반복 일정 시리즈마다 고유한 ID 생성
-    const repeatId = body.events[0]?.repeat?.type !== 'none' 
-      ? `repeat-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
-      : undefined;
-    
+    const repeatId =
+      body.events[0]?.repeat?.type !== 'none'
+        ? `repeat-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+        : undefined;
+
     const eventsWithIds = body.events.map((event, index) => ({
       ...event,
       id: String(mockEvents.length + index + 1),
