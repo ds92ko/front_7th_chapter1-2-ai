@@ -145,11 +145,30 @@ export const useEventOperations = (
           }
         } else {
           // 단일 일정 수정
-          response = await fetch(`/api/events/${(eventData as Event).id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(eventData),
-          });
+          const editingEventData = eventData as Event;
+
+          // 단일 일정을 반복 일정으로 변경하는 경우
+          if (editingEventData.repeat.type !== 'none') {
+            // 기존 단일 일정 삭제
+            await fetch(`/api/events/${editingEventData.id}`, {
+              method: 'DELETE',
+            });
+
+            // 새로운 반복 일정들 생성
+            const recurringEvents = generateRecurringEvents(editingEventData);
+            response = await fetch('/api/events-list', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ events: recurringEvents }),
+            });
+          } else {
+            // 단일 일정 유지
+            response = await fetch(`/api/events/${editingEventData.id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(eventData),
+            });
+          }
         }
       } else {
         // 반복 일정인 경우
