@@ -156,8 +156,10 @@ export const useEventOperations = (
               method: 'DELETE',
             });
 
-            // 새로운 반복 일정들 생성
-            const recurringEvents = generateRecurringEvents(editingEventData);
+            // 새로운 반복 일정들 생성 (id 제거하고 EventForm으로 변환)
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+            const { id: _id, ...eventFormData } = editingEventData;
+            const recurringEvents = generateRecurringEvents(eventFormData as EventForm);
             response = await fetch('/api/events-list', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
