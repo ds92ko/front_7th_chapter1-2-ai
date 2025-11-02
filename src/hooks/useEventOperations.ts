@@ -35,8 +35,10 @@ export const useEventOperations = (
           const repeatId = (eventData as Event).repeat.id;
           const editingEventData = eventData as Event;
 
-          // 같은 시리즈의 모든 일정 가져오기
-          const seriesEvents = events.filter((e) => e.repeat.id === repeatId);
+          // 같은 시리즈의 모든 일정 가져오기 (repeat.type이 'none'이 아닌 것만)
+          const seriesEvents = events.filter(
+            (e) => e.repeat.id === repeatId && e.repeat.type !== 'none'
+          );
 
           // 원래 클릭한 일정을 기준으로 비교 (editingEvent)
           const originalEvent = editingEvent || seriesEvents[0];

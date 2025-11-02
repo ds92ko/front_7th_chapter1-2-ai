@@ -146,7 +146,8 @@ function App() {
         type: isRepeating ? repeatType : 'none',
         interval: repeatInterval,
         endDate: repeatEndDate || undefined,
-        id: editingEvent?.repeat.id,
+        // 단일 일정으로 변경 시 repeat.id를 제거, 반복 일정 유지 시 기존 id 사용
+        id: isRepeating ? editingEvent?.repeat.id : undefined,
       },
       notificationTime,
     };
